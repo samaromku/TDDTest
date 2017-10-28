@@ -4,21 +4,26 @@ package ru.savchenko.andrey.tddtest.entities;
  * Created by Andrey on 27.10.2017.
  */
 
-public class Money {
+public class Money implements Expression{
     protected int amount;
     protected String currency;
     public String currency(){
         return currency;
     }
 
-    public Money plus(Money add){
-        return new Money(amount + add.amount/2, currency);
+    public Expression plus(Expression add){
+        return new Sum(this, add);
     }
 
-    public Money times(int times) {
+    @Override
+    public Money reduce(Bank bank, String to) {
+        int rate = bank.rate(currency, to);
+        return new Money(amount/rate, to);
+    }
+
+    public Expression times(int times) {
         return new Money(times * amount, currency);
     }
-//    public abstract Money times(int times);
 
     public Money(int amount, String currency) {
         this.amount = amount;
